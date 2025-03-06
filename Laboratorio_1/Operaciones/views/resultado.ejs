@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado de la Tabla</title>
+</head>
+<body>
+  <h1>Tabla de Operación</h1>
+
+  <table border="1">
+    <tr>
+      <td>Numero</td>
+      <th>Operación</th>
+      <th>Valor</th>
+      <th>Resultado</th>
+    </tr>
+
+    <% tabla.forEach(item => { %>
+      <tr>
+        <td><%= item.numero %> </td>
+        <td><%= item.operacion %> </td>
+        <td><%= item.valor %></td>
+        <td><%= item.resultado %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <br><a href="/">Volver</a>
+</body>
+</html>
