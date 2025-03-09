@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Suma en Tiempo Real</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #sum {
+            font-size: 2em;
+            margin: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 1.2em;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Juego de Suma en Tiempo Real</h1>
+    <div id="sum">Suma Total: 0</div>
+    <input type="number" id="numberInput" placeholder="Ingrese un número">
+    <button onclick="sendNumber()">Enviar Número</button>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:3000');  // Conexión al servidor WebSocket
+
+        // Función para enviar un número al servidor
+        ws.onmessage = function(event){
+            const data = JSON.parse(event.data);  // Convertir el mensaje JSON a objeto
+
+            if(data.type === 'update'){
+                document.getElementById('sum').textContent = `Suma Total: ${data.sum}`;
+            }
+
+        }
+
+        // Función para enviar un número al servidor
+        function sendNumber() {
+            const number = parseInt(document.getElementById('numberInput').value);  // Obtener el número ingresado
+            if(!isNaN(number)) {
+                ws.send(JSON.stringify({ type: 'suma', number: number }));  // Enviar el número al servidor
+                document.getElementById('numberInput').value = '';  // Limpiar el campo de texto
+                document.getElementById('numberInput').focus();  // Enfocar el campo de texto
+            }
+        }
+    </script>
+</body>
+</html>
