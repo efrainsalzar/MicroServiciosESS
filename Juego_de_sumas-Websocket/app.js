@@ -21,7 +21,7 @@ wss.on('connection', (ws) =>{
     
         if(data.type === 'suma') {
             sumaTotal += data.number;
-            console.log('suma total:', sumaTotal);
+            //console.log('suma total:', sumaTotal);
 
             //enviar la suma total a todos los clientes
             wss.clients.forEach(client => {
