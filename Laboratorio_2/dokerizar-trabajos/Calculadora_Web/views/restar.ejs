@@ -1,0 +1,14 @@
+<%- include( 'layout', {body: `
+    <div class="principal">
+        <div class="container">
+            <h1>Introduzca los números a calcular</h1>
+                <form action= "/restar" method="POST">
+                    <label >Número a:</label>
+                    <input type="number" name="num1" id="num1" required>
+                    <label >Numero b:</label>
+                    <input type="number" name="num2" id="num2" required>
+                    <button type="submit" >Calcular</button>
+                </form> 
+        </div>
+    </div>
+`}) %>
