@@ -1,31 +1,32 @@
 version: '3.8'
-
 services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_USER: root
-      DB_PASSWORD: example
-      DB_NAME: user_db
-    volumes:
-      - .:/app
-      - /app/node_modules
-
   db:
-    image: mysql:8
+    image: mysql:latest
+    container_name: mysql_container
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: user_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: users_db
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: node_app
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "3001:3000"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=rootpassword
+      - MYSQL_DATABASE=users_db
+    volumes:
+      - .:/app
 
 volumes:
   mysql_data:

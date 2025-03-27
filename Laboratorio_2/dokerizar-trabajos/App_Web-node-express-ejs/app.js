@@ -1,24 +1,37 @@
-// app.js
 const express = require('express');
-const bodyParser = require('body-parser');
+const connection = require('./config/db');
 const path = require('path');
-const usersRouter = require('./routes/users');
 
 const app = express();
-const PORT = 3000;
 
-// Configuración de EJS
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use(express.urlencoded({ extended: false }));
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Rutas
-app.use('/', usersRouter);
-
-// Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en el puerto: ${PORT}`);
+// Mostrar usuarios
+app.get('/', (req, res) => {
+    connection.query('SELECT * FROM usuarios', (err, results) => {
+        if (err) throw err;
+        res.render('index', { usuarios: results });
+    });
 });
+
+// Agregar usuario
+app.post('/add', (req, res) => {
+    const { nombre, correo } = req.body;
+    connection.query('INSERT INTO usuarios (nombre, correo) VALUES (?, ?)', [nombre, correo], err => {
+        if (err) throw err;
+        res.redirect('/');
+    });
+});
+
+// Eliminar usuario
+app.post('/delete/:id', (req, res) => {
+    connection.query('DELETE FROM usuarios WHERE id = ?', [req.params.id], err => {
+        if (err) throw err;
+        res.redirect('/');
+    });
+});
+
+app.listen(3000, () => console.log('Servidor corriendo en http://localhost:3000'));

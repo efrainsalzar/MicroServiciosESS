@@ -1,50 +1,45 @@
-<div class="user-list-section">
-    <h2>Lista de Usuarios</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Usuarios</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Usuarios Registrados</h1>
+    
+    <!-- Tabla de usuarios -->
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Correo Electrónico</th>
-                <th>Fecha de Registro</th>
+                <th>fecha de registro</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <% if (users.length === 0) { %>
+            <% usuarios.forEach(user => { %>
                 <tr>
-                    <td colspan="5">No hay usuarios registrados.</td>
+                    <td><%= user.nombre %></td>
+                    <td><%= user.correo %></td>
+                    <td><%= new Date(user.fecha_registro).toLocaleDateString() %></td>
+                    <td>
+                        <form action="/delete/<%= user.id %>" method="POST" style="display:inline;">
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </td>
                 </tr>
-            <% } else { %>
-                <% users.forEach(user => { %>
-                    <tr>
-                        <td><%= user.id %></td>
-                        <td><%= user.name %></td>
-                        <td><%= user.email %></td>
-                        <td><%= user.registration_date ? new Date(user.registration_date).toLocaleDateString() : 'Sin fecha' %></td>
-                        <td>
-                            <form action="/delete/<%= user.id %>" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
-                                <button type="submit" class="btn-delete">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                <% }) %>
-            <% } %>
+            <% }); %>
         </tbody>
     </table>
-</div>
 
-<div class="add-user-section">
+    <!-- Formulario para agregar usuarios -->
     <h2>Agregar Nuevo Usuario</h2>
     <form action="/add" method="POST">
-        <div class="form-group">
-            <label for="name">Nombre</label>
-            <input type="text" id="name" name="name" placeholder="Nombre" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
-        </div>
-        <button type="submit" class="btn-submit">Registrar</button>
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="email" name="correo" placeholder="Correo Electrónico" required>
+        <button type="submit">Agregar</button>
     </form>
-</div>
+</body>
+</html>
