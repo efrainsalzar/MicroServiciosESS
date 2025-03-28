@@ -1,15 +1,17 @@
 # Usar la imagen oficial de Node.js
-FROM node:18
+FROM node:16
 
-# Establecer el directorio de trabajo
+# Crear el directorio de la app
 WORKDIR /app
 
-# Copiar archivos del proyecto
+# Copiar los archivos de la aplicación
 COPY package*.json ./
 RUN npm install
+
+# Copiar el resto de los archivos de la aplicación
 COPY . .
 
-# Exponer el puerto de la aplicación
+# Exponer el puerto en el que la app estará escuchando
 EXPOSE 3000
 
 # Comando para ejecutar la aplicación
