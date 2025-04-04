@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config({path:'../.env'}); // Cargar variables de entorno desde .env
+require('dotenv').config({path:'../.env.example'}); // Cargar variables de entorno desde .env
 
 
 // Crea la instancia de Sequelize

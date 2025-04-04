@@ -1,0 +1,650 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Sistema de Ventas",
+        "version": "1.0.0",
+        "description": "Documentación de la API para la gestión de productos, clientes, facturas y detalles de factura"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/api"
+        }
+    ],
+    "paths": {
+        "/productos": {
+            "get": {
+                "summary": "Obtener todos los productos",
+                "tags": [
+                    "Productos"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de productos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Producto"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crear un nuevo producto",
+                "tags": [
+                    "Productos"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Producto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Producto creado exitosamente"
+                    }
+                }
+            }
+        },
+        "/productos/{id}": {
+            "get": {
+                "summary": "Obtener un producto por ID",
+                "tags": [
+                    "Productos"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Producto"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Producto no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualizar un producto",
+                "tags": [
+                    "Productos"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Producto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Producto actualizado"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Eliminar un producto",
+                "tags": [
+                    "Productos"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Producto eliminado"
+                    }
+                }
+            }
+        },
+        "/clientes": {
+            "get": {
+                "summary": "Obtener todos los clientes",
+                "tags": [
+                    "Clientes"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de clientes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Cliente"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crear un nuevo cliente",
+                "tags": [
+                    "Clientes"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cliente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cliente creado exitosamente"
+                    }
+                }
+            }
+        },
+        "/clientes/{id}": {
+            "get": {
+                "summary": "Obtener un cliente por ID",
+                "tags": [
+                    "Clientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Cliente"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cliente no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualizar un cliente",
+                "tags": [
+                    "Clientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Cliente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Cliente actualizado"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Eliminar un cliente",
+                "tags": [
+                    "Clientes"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cliente eliminado"
+                    }
+                }
+            }
+        },
+        "/facturas": {
+            "get": {
+                "summary": "Obtener todas las facturas",
+                "tags": [
+                    "Facturas"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de facturas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Factura"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crear una nueva factura",
+                "tags": [
+                    "Facturas"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Factura"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Factura creada exitosamente"
+                    }
+                }
+            }
+        },
+        "/facturas/{id}": {
+            "get": {
+                "summary": "Obtener una factura por ID",
+                "tags": [
+                    "Facturas"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Factura encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Factura"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Factura no encontrada"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualizar una factura",
+                "tags": [
+                    "Facturas"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Factura"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Factura actualizada"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Eliminar una factura",
+                "tags": [
+                    "Facturas"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Factura eliminada"
+                    }
+                }
+            }
+        },
+        "/detalles-factura": {
+            "get": {
+                "summary": "Obtener todos los detalles de factura",
+                "tags": [
+                    "Detalles de Factura"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de detalles de factura",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DetalleFactura"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Crear un nuevo detalle de factura",
+                "tags": [
+                    "Detalles de Factura"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DetalleFactura"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Detalle de factura creado exitosamente"
+                    }
+                }
+            }
+        },
+        "/detalles-factura/{id}": {
+            "get": {
+                "summary": "Obtener un detalle de factura por ID",
+                "tags": [
+                    "Detalles de Factura"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle de factura encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DetalleFactura"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Detalle de factura no encontrado"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualizar un detalle de factura",
+                "tags": [
+                    "Detalles de Factura"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DetalleFactura"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Detalle de factura actualizado"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Eliminar un detalle de factura",
+                "tags": [
+                    "Detalles de Factura"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalle de factura eliminado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Producto": {
+                "type": "object",
+                "properties": {
+                    "nombre": {
+                        "type": "string",
+                        "example": "Laptop Dell"
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "example": "Laptop de alto rendimiento"
+                    },
+                    "marca": {
+                        "type": "string",
+                        "example": "Dell"
+                    },
+                    "stock": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                },
+                "required": [
+                    "nombre",
+                    "descripcion",
+                    "marca",
+                    "stock"
+                ]
+            },
+            "Cliente": {
+                "type": "object",
+                "properties": {
+                    "ci": {
+                        "type": "string",
+                        "example": "1234567890"
+                    },
+                    "nombres": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                    },
+                    "apellidos": {
+                        "type": "string",
+                        "example": "González"
+                    },
+                    "sexo": {
+                        "type": "string",
+                        "enum": [
+                            "M",
+                            "F"
+                        ],
+                        "example": "M"
+                    }
+                },
+                "required": [
+                    "ci",
+                    "nombres",
+                    "apellidos",
+                    "sexo"
+                ]
+            },
+            "Factura": {
+                "type": "object",
+                "properties": {
+                    "clienteId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "total": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100.50
+                    },
+                    "fechaEmision": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-04-04"
+                    }
+                },
+                "required": [
+                    "clienteId",
+                    "total",
+                    "fechaEmision"
+                ]
+            },
+            "DetalleFactura": {
+                "type": "object",
+                "properties": {
+                    "facturaId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "productoId": {
+                        "type": "integer",
+                        "example": 101
+                    },
+                    "cantidad": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "precioUnitario": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50.25
+                    },
+                    "subtotal": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100.50
+                    }
+                },
+                "required": [
+                    "facturaId",
+                    "productoId",
+                    "cantidad",
+                    "precioUnitario"
+                ]
+            }
+        }
+    }
+}
