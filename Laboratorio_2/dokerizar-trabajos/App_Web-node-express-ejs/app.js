@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Mostrar usuarios
 app.get('/', (req, res) => {
-    connection.query('SELECT * FROM usuarios', (err, results) => {
+    connection.query('SELECT * FROM users', (err, results) => {
         if (err) throw err;
         res.render('index', { usuarios: results });
     });
@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 // Agregar usuario
 app.post('/add', (req, res) => {
     const { nombre, correo } = req.body;
-    connection.query('INSERT INTO usuarios (nombre, correo) VALUES (?, ?)', [nombre, correo], err => {
+    connection.query('INSERT INTO users (nombre, correo) VALUES (?, ?)', [nombre, correo], err => {
         if (err) throw err;
         res.redirect('/');
     });
@@ -28,7 +28,7 @@ app.post('/add', (req, res) => {
 
 // Eliminar usuario
 app.post('/delete/:id', (req, res) => {
-    connection.query('DELETE FROM usuarios WHERE id = ?', [req.params.id], err => {
+    connection.query('DELETE FROM users WHERE id = ?', [req.params.id], err => {
         if (err) throw err;
         res.redirect('/');
     });
