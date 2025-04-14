@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sequelize');  // Ruta al archivo de configuración de DB
+const sequelize = require('./sequelize');  // Ruta al archivo de configuración de DB
 
-// Definir el modelo de Cliente usando Sequelize
 const Cliente = sequelize.define('Cliente', {
   ci: {
     type: DataTypes.STRING,

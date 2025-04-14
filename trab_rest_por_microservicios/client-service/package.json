@@ -1,5 +1,5 @@
 {
-  "name": "api-gataway",
+  "name": "client-service",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -8,5 +8,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.0",
+    "sequelize": "^6.37.7"
+  }
 }
