@@ -1,0 +1,84 @@
+# .NET Core
+/bin/
+/obj/
+/out/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+.idea/
+/.vs/
+/.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer logs
+*.log
+
+# Windows Installer temp files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# NUGET
+*.nupkg
+# NuGet v2 config
+# http://docs.nuget.org/consume/nuget-faq#what-is-the-connection-between-packagesconfig-and-nuspec
+# .nuget/
+# The files in the .nuget folder are created when you restore packages
+.nuget/
+
+# User-specific files
+.vs2019/
+.vscode/
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Microsoft Azure Web App publish settings
+PublishProfiles/
+
+# Tye
+.tye/
+
+# ASP.NET Core Identity database files
+appsettings.Production.json
+appsettings.Development.json
+appsettings.Staging.json
+
+# Entity Framework Core
+# The following is for when using EF Core migrations
+# You should never commit migration files to a source control system like git if they are auto-generated
+migrations/
+
+# Others
+*.db
+*.bak
+*.log
+
+# JetBrains Rider
+.idea/
+
+# VS for Mac
+.vscode/
+.idea/
+
+# VS Code directories
+.vscode/
+
+# .NET SDK
+project.assets.json
+project.nuget.cache
