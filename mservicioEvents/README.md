@@ -1,26 +1,56 @@
-# Lumen PHP Framework
+# Guía para usar el microservicio en PHP
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/lumen-framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://img.shields.io/packagist/v/laravel/lumen-framework)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://img.shields.io/packagist/l/laravel/lumen)](https://packagist.org/packages/laravel/lumen-framework)
+## 1. Requisitos previos
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+- PHP >= 7.4
+- Composer (https://getcomposer.org/)
+- Servidor web (opcional, puedes usar el servidor embebido de PHP)
 
-> **Note:** In the years since releasing Lumen, PHP has made a variety of wonderful performance improvements. For this reason, along with the availability of [Laravel Octane](https://laravel.com/docs/octane), we no longer recommend that you begin new projects with Lumen. Instead, we recommend always beginning new projects with [Laravel](https://laravel.com).
+## 2. Instalación de dependencias
 
-## Official Documentation
+Crea un archivo `composer.json` en la raíz del microservicio con el siguiente contenido:
 
-Documentation for the framework can be found on the [Lumen website](https://lumen.laravel.com/docs).
+{
+    "require": {
+        "slim/slim": "^4.0",
+        "slim/psr7": "^1.3"
+    }
+}
 
-## Contributing
+Luego ejecuta en la terminal:
 
-Thank you for considering contributing to Lumen! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+composer install
 
-## Security Vulnerabilities
+## 3. Código base del microservicio
 
-If you discover a security vulnerability within Lumen, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+Crea un archivo `index.php` con el siguiente contenido de ejemplo:
 
-## License
+<?php
+require __DIR__ . '/vendor/autoload.php';
 
-The Lumen framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Factory\AppFactory;
+
+$app = AppFactory::create();
+
+
+$app->run();
+
+## 4. Ejecución del microservicio
+
+Desde la raíz del proyecto, ejecuta:
+
+php -S localhost:8080 index.php
+
+## 5. Prueba
+
+Abre tu navegador y visita:  
+http://localhost:8080/eventos
+
+Deberías ver una respuesta JSON con los eventos de ejemplo.
+
+---
+
+**Nota:**  
+Adapta las rutas y lógica según las necesidades de tu microservicio.
