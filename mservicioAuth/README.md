@@ -51,3 +51,30 @@ Este microservicio proporciona funcionalidades de autenticación (login, registr
 **Endpoint:** `POST /api/auth/register`
 
 **Ejemplo de Request:**
+
+
+```json
+{
+    "Jwt": {
+        "Key": "clave-secreta-super-segura-con-mucha-y-mucha-seguridad",
+        "Issuer": "AuthService"
+    },
+    "ConnectionStrings": {
+        // Para desarrollo local:
+        // "DefaultConnection": "Server=localhost;Database=mservice_users_auth;User=root;Password=;"
+        // Para entorno Docker (usa el nombre del contenedor del servicio de base de datos):
+        "DefaultConnection": "server=db;port=3306;database=mservice_users_auth;user=root;password=;"
+    },
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information"
+        }
+    },
+    "AllowedHosts": "*"
+}
+```
+
+> **Nota:**  
+> - Cambia `"server=db"` por el nombre del contenedor de tu base de datos definido en `docker-compose.yml` (por ejemplo, `db`).
+> - Asegúrate de que los valores de `database`, `user` y `password` coincidan con los configurados en tu contenedor de base de datos.
+> - No incluyas comentarios (`// ...`) en archivos JSON reales; son solo para referencia aquí.
