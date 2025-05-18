@@ -7,16 +7,6 @@ use App\Models\EventModel;
 
 class EventController extends Controller
 {
-    // Verifica la conexión a la base de datos
-    public function testConnection()
-    {
-        try {
-            \DB::connection()->getPdo();
-            return response()->json(['message' => 'Conexión a la base de datos exitosa.']);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'No se pudo conectar a la base de datos.', 'error' => $e->getMessage()], 500);
-        }
-    }
 
     // Obtener todos los eventos
     public function index()
