@@ -13,13 +13,18 @@ namespace mservicioAuth.Controllers
     {
         private readonly AppDbContext _context;
 
-        // Constructor que recibe el contexto de la base de datos
+
+        /// Constructor que recibe el contexto de la base de datos.
         public UserController(AppDbContext context)
         {
             _context = context;
         }
 
-        // Valida si el email o username ya existen
+        /// <summary>
+        /// Valida si el email o username ya existen en la base de datos.
+        /// </summary>
+        /// <param name="user">Usuario a validar</param>
+        /// <returns>Mensaje de error si existe, o null si es válido</returns>
         private string? ValidateUser(User user)
         {
             if (_context.Users.Any(u => u.Email == user.Email))
@@ -29,15 +34,15 @@ namespace mservicioAuth.Controllers
             return null;
         }
 
-        // Prepara el usuario antes de guardar
+        /// Prepara el usuario antes de guardarlo: asigna rol, hashea contraseña y fecha de creación.
         private void PrepareUser(User user, string role)
         {
-            user.Role = role.ToLower(); //rol a minusculas
-            user.Password_Hash = BCrypt.Net.BCrypt.HashPassword(user.Password_Hash); 
-            user.Created_At = DateTime.UtcNow; // captura la fecha antes de crear en la DB
+            user.Role = role.ToLower();
+            user.Password_Hash = BCrypt.Net.BCrypt.HashPassword(user.Password_Hash);
+            user.Created_At = DateTime.UtcNow;
         }
 
-        // Obtiene todos los usuarios (solo admin)
+        /// Obtiene todos los usuarios registrados. Solo accesible por administradores.
         [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -46,7 +51,7 @@ namespace mservicioAuth.Controllers
             return Ok(users);
         }
 
-        // Registra un nuevo usuario
+        /// Registra un nuevo usuario con rol "user".
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
@@ -69,7 +74,7 @@ namespace mservicioAuth.Controllers
             });
         }
 
-        // Crea un usuario administrador (solo admin)
+        /// Crea un usuario administrador. Solo accesible por administradores.
         [Authorize(Roles = "admin")]
         [HttpPost("create-admin")]
         public async Task<IActionResult> CreateAdmin([FromBody] User adminUser)

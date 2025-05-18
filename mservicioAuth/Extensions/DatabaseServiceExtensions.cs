@@ -7,6 +7,7 @@ namespace mservicioAuth.Extensions
 {
     public static class DatabaseServiceExtensions
     {
+        /// Agrega el contexto de base de datos MySQL al contenedor de servicios.
         public static IServiceCollection AddCustomDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>

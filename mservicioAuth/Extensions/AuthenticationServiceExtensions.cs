@@ -9,12 +9,14 @@ namespace mservicioAuth.Extensions
 {
     public static class AuthenticationServiceExtensions
     {
+        /// Configura la autenticación JWT y la autorización para el proyecto.
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtKey = configuration["Jwt:Key"];
             if (string.IsNullOrEmpty(jwtKey))
                 throw new Exception("Jwt:Key no está definida en appsettings.json");
 
+            // Configura la autenticación JWT Bearer
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -29,6 +31,7 @@ namespace mservicioAuth.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                     };
 
+                    // Personaliza la respuesta cuando el acceso es prohibido
                     options.Events = new JwtBearerEvents
                     {
                         OnForbidden = context =>
