@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using mservicioAuth.Data;
 using mservicioAuth.Models;
 using BCrypt.Net;
-
 using Microsoft.AspNetCore.Authorization;
-
 
 namespace mservicioAuth.Controllers
 {
@@ -21,7 +19,25 @@ namespace mservicioAuth.Controllers
             _context = context;
         }
 
-        // GET: api/User
+        // Valida si el email o username ya existen
+        private string? ValidateUser(User user)
+        {
+            if (_context.Users.Any(u => u.Email == user.Email))
+                return "El correo ya está registrado.";
+            if (_context.Users.Any(u => u.Username == user.Username))
+                return "El nombre de usuario ya está en uso";
+            return null;
+        }
+
+        // Prepara el usuario antes de guardar
+        private void PrepareUser(User user, string role)
+        {
+            user.Role = role.ToLower(); //rol a minusculas
+            user.Password_Hash = BCrypt.Net.BCrypt.HashPassword(user.Password_Hash); 
+            user.Created_At = DateTime.UtcNow; // captura la fecha antes de crear en la DB
+        }
+
+        // Obtiene todos los usuarios (solo admin)
         [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
@@ -30,33 +46,19 @@ namespace mservicioAuth.Controllers
             return Ok(users);
         }
 
-        // POST: api/user/register
+        // Registra un nuevo usuario
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
         {
+            var validationMsg = ValidateUser(user);
+            if (validationMsg != null)
+                return BadRequest(validationMsg);
 
-            user.Role = "user";
+            PrepareUser(user, "user");
 
-            
-            if (_context.Users.Any(u => u.Email == user.Email))
-                return BadRequest("El correo ya está registrado.");
-
-
-            if (_context.Users.Any(u => u.Username == user.Username))
-                return BadRequest("El nombre de usuario ya esta en uso");
-
-            // Hashea la contraseña antes de guardarla
-            user.Password_Hash = BCrypt.Net.BCrypt.HashPassword(user.Password_Hash);
-            user.Created_At = DateTime.UtcNow;
-
-            // Convierte el rol a minúsculas
-            user.Role = user.Role.ToLower();
-
-            // Agrega a la base de datos
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Retorna mensaje de éxito
             return Ok(new
             {
                 mensaje = "Usuario creado correctamente.",
@@ -67,20 +69,16 @@ namespace mservicioAuth.Controllers
             });
         }
 
+        // Crea un usuario administrador (solo admin)
         [Authorize(Roles = "admin")]
         [HttpPost("create-admin")]
         public async Task<IActionResult> CreateAdmin([FromBody] User adminUser)
         {
-            adminUser.Role = "admin";
+            var validationMsg = ValidateUser(adminUser);
+            if (validationMsg != null)
+                return BadRequest(validationMsg);
 
-            if (_context.Users.Any(u => u.Email == adminUser.Email))
-                return BadRequest("El correo ya está registrado.");
-
-            if (_context.Users.Any(u => u.Username == adminUser.Username))
-                return BadRequest("El nombre de usuario ya está en uso");
-
-            adminUser.Password_Hash = BCrypt.Net.BCrypt.HashPassword(adminUser.Password_Hash);
-            adminUser.Created_At = DateTime.UtcNow;
+            PrepareUser(adminUser, "admin");
 
             _context.Users.Add(adminUser);
             await _context.SaveChangesAsync();
@@ -94,6 +92,5 @@ namespace mservicioAuth.Controllers
                 adminUser.Role
             });
         }
-
     }
 }
