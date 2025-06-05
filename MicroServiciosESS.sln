@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiRest_C", "ApiRest_C\ApiR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mservicioAuth", "mservicioAuth\mservicioAuth.csproj", "{0FB6EFD9-7CD7-4D28-A5F4-C9CB9B7DA1EB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ex", "Ex", "{D6B737DA-891A-4408-A81A-BDF992943A42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examen_2", "Examen_2", "{181BDF95-1D54-4338-BEAE-1648CEC27763}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mservicio_habitaciones", "Ex\Examen_2\mservicio_habitaciones\mservicio_habitaciones.csproj", "{FAB22A12-0954-4862-9E6B-B134AF485221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,11 +47,27 @@ Global
 		{0FB6EFD9-7CD7-4D28-A5F4-C9CB9B7DA1EB}.Release|x64.Build.0 = Release|Any CPU
 		{0FB6EFD9-7CD7-4D28-A5F4-C9CB9B7DA1EB}.Release|x86.ActiveCfg = Release|Any CPU
 		{0FB6EFD9-7CD7-4D28-A5F4-C9CB9B7DA1EB}.Release|x86.Build.0 = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|x64.Build.0 = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Debug|x86.Build.0 = Debug|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|x64.ActiveCfg = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|x64.Build.0 = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|x86.ActiveCfg = Release|Any CPU
+		{FAB22A12-0954-4862-9E6B-B134AF485221}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7986A4EA-B3FC-4D50-A39B-3371475EE3B9}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{181BDF95-1D54-4338-BEAE-1648CEC27763} = {D6B737DA-891A-4408-A81A-BDF992943A42}
+		{FAB22A12-0954-4862-9E6B-B134AF485221} = {181BDF95-1D54-4338-BEAE-1648CEC27763}
 	EndGlobalSection
 EndGlobal
