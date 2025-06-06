@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\mservicio_habitaciones.props" />
-</Project>
