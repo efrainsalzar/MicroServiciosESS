@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_NAME=usuarios_f
+      - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
+      - NODE_ENV=development
+      - SWAGGER_HOST_PORT=3001
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npx knex migrate:latest --knexfile knexfile.js --env development && node app.js"
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: usuarios_f
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
