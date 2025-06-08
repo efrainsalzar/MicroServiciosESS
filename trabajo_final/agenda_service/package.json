@@ -1,0 +1,25 @@
+{
+  "name": "agenda_service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@graphql-tools/merge": "^9.0.24",
+    "apollo-server-express": "^3.13.0",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "graphql": "16.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "8.15.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.28.0",
+    "nodemon": "^3.1.10"
+  }
+}
