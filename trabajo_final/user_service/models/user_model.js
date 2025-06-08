@@ -43,6 +43,19 @@ const User = {
       throw error;
     }
   },
+  findById: async (id) => {
+    if (!id) {
+      throw new Error("User ID is required.");
+    }
+    const sql = "SELECT * FROM users WHERE id = ?";
+    try {
+      const [rows] = await db.query(sql, [id]);
+      return rows[0]; // Returns the first user found or undefined
+    } catch (error) {
+      console.error("Error finding user by ID in model:", error);
+      throw error;
+    }
+  },
 
   findUserByEmail: async (email) => {
     try {

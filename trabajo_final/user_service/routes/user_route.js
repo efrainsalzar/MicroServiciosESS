@@ -4,6 +4,7 @@ const { verifyToken } = require("../middleware/authMiddleware");
 const router = express.Router();
 const {
   getAllUsers,
+  getUserById,
   registerUser,
   loginUser,
   getAllUsersPrivate,
@@ -35,6 +36,35 @@ const {
  *         description: Error del servidor
  */
 router.get("/get", getAllUsers);
+
+/** * @swagger
+ * /api/get_id/{id}:
+ *   get:
+ *     summary: Obtener un usuario por ID (público)
+ *     tags: [Usuarios]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario a obtener
+ *     responses:
+ *       200:
+ *         description: Usuario encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: ID de usuario inválido
+ *       404:
+ *         description: Usuario no encontrado
+ *       500:
+ *         description: Error del servidor
+ */
+
+router.get("/get_id/:id", getUserById);
 
 /**
  * @swagger

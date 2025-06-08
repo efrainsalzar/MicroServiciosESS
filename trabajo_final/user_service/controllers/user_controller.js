@@ -25,6 +25,26 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+//Controlador para obtener un usuario por ID (público)
+const getUserById = async (req, res) => {
+  const userId = req.params.id;
+  if (!userId) {
+    return res.status(400).json({ message: "ID de usuario es requerido" });
+  }
+  try {
+    // Await directamente la llamada al modelo, ya que devuelve una promesa
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+    // Mapea el usuario a datos públicos
+    res.json(mapUserToPublicData(user));
+  } catch (err) {
+    console.error("Error al obtener usuario por ID:", err);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
+
 // Controlador para registrar nuevo usuario
 const registerUser = async (req, res) => {
   const { name, email, password_hash, role } = req.body;
@@ -130,6 +150,7 @@ const getAllUsersPrivate = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getUserById,
   registerUser,
   loginUser,
   getAllUsersPrivate,
