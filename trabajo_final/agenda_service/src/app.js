@@ -1,14 +1,15 @@
 const express = require('express');
+const connectDB = require('./config/db');
+const auth = require('./middlewares/auth');
+const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
+
 const dotenv = require('dotenv');
 const { ApolloServer } = require('apollo-server-express');
-const connectDB = require('./config/db');
+
 const especialidad_typeDefs = require('./graphql/especialidad_schema');
 const especialidad_resolvers = require('./graphql/especialidad_resolvers');
 const agendaTypeDefs = require('./graphql/agenda_schema');
 const agendaResolvers = require('./graphql/agenda_resolvers');
-const auth = require('./middlewares/auth'); 
-
-const { mergeTypeDefs, mergeResolvers } = require('@graphql-tools/merge');
 
 dotenv.config();
 
@@ -16,11 +17,8 @@ const app = express();
 
 app.use(express.json());
 
-
 const combinedTypeDefs = mergeTypeDefs([especialidad_typeDefs, agendaTypeDefs]);
 const combinedResolvers = mergeResolvers([especialidad_resolvers, agendaResolvers]);
-
-
 
 async function startServer() {
   try {

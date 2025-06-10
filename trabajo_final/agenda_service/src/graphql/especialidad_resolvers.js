@@ -1,8 +1,15 @@
+const { AuthenticationError } = require("apollo-server-express");
 const Especialidad = require("../models/especialidad");
 
 const especialidad_resolvers = {
   Query: {
-    getEspecialidades: async () => {
+    getEspecialidades: async (parent,args,context) => {
+      if (!context.user) {
+        throw new AuthenticationError("No autorizado. Token inválido o ausente.");
+      }
+      if (context.user.role !== "admin") {
+        throw new AuthenticationError("Solo los adminitradores pueden acceder a esta agenda.");
+      }
       try {
         return await Especialidad.find();
       } catch (error) {
@@ -11,24 +18,16 @@ const especialidad_resolvers = {
         );
       }
     },
-
-    getEspecialidad: async (_, { id }) => {
-      try {
-        const especialidad = await Especialidad.findById(id);
-        if (!especialidad) {
-          throw new Error(`No se encontró la especialidad con ID: ${id}`);
-        }
-        return especialidad;
-      } catch (error) {
-        throw new Error(
-          `Error al obtener la especialidad con ID ${id}: ${error.message}`
-        );
-      }
-    },
   },
 
   Mutation: {
-    crearEspecialidad: async (_, { nombre, descripcion }) => {
+    crearEspecialidad: async (_, { nombre, descripcion }, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("No autorizado. Token inválido o ausente.");
+      }
+      if (context.user.role !== "admin") {
+        throw new AuthenticationError("Solo los adminitradores pueden acceder a esta agenda.");
+      }
       try {
         const existente = await Especialidad.findOne({ nombre });
         if (existente) {
@@ -44,7 +43,13 @@ const especialidad_resolvers = {
       }
     },
 
-    borrarEspecialidad: async (_, { id }) => {
+    borrarEspecialidad: async (_, { id },context) => {
+      if (!context.user) {
+        throw new AuthenticationError("No autorizado. Token inválido o ausente.");
+      }
+      if (context.user.role !== "admin") {
+        throw new AuthenticationError("Solo los adminitradores pueden acceder a esta agenda.");
+      }
       try {
         const especialidad = await Especialidad.findByIdAndDelete(id);
         if (!especialidad) {

@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  agendas_app:
+    build: .
+    ports:
+      - "4001:4000"  # localhost:4001 apunta al puerto 4000 interno de la app
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/agendas_db
+      - JWT_SECRET=super_secreto_agendas
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "node app.js"
+
+  mongo:
+    image: mongo:6.0
+    container_name: agendas_mongo
+    restart: always
+    ports:
+      - "27018:27017"  # puedes usar otro puerto externo si ya usas Mongo local
+    environment:
+      MONGO_INITDB_DATABASE: agendas_db
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongo_data:

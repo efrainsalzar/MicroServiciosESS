@@ -9,7 +9,6 @@ const especialidad_typeDefs = gql`
 
   type Query {
     getEspecialidades: [Especialidad]
-    getEspecialidad(id: ID!): Especialidad
   }
 
   type Mutation {
@@ -19,11 +18,8 @@ const especialidad_typeDefs = gql`
 `;
 
 module.exports = especialidad_typeDefs;
-
-
 /*
 -------------------------------------------------------
-
 query {
     getEspecialidades {
         id
@@ -31,19 +27,7 @@ query {
         descripcion
     }
 }
-
 -------------------------------------------------------
-query {
-    getEspecialidad(id: null) {
-        id
-        nombre
-        descripcion
-    }
-}
-
-
--------------------------------------------------------
-
 mutation {
     crearEspecialidad(nombre: null, descripcion: null) {
         id
@@ -51,9 +35,7 @@ mutation {
         descripcion
     }
 }
-
 -------------------------------------------------------
-
 mutation {
     borrarEspecialidad(id: null) {
         id
@@ -61,5 +43,4 @@ mutation {
         descripcion
     }
 }
-
 */
