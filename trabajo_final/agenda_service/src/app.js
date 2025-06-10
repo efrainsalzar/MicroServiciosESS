@@ -39,10 +39,13 @@ async function startServer() {
     // Integrar Apollo Server con Express en la ruta /graphql
     server.applyMiddleware({ app, path: '/graphql' });
 
-    const PORT = process.env.PORT || 4000;
+    const PORT = process.env.PORT;
+    const HOST_PORT = process.env.HOST_PORT; 
+
     app.listen(PORT, () => {
-      console.log(`Servidor de agendas en el puerto ${PORT}`);
-      console.log(`GraphQL disponible en http://localhost:${PORT}${server.graphqlPath}`);
+      console.log(`Servidor de agendas corriendo internamente en puerto ${PORT}`);
+      console.log(`Si es en Local:  http://localhost:${PORT}${server.graphqlPath}`);
+      console.log(`Si se en Docker:  http://localhost:${HOST_PORT}${server.graphqlPath}`);
     });
   } catch (error) {
     console.error('Error arrancando el servidor:', error);

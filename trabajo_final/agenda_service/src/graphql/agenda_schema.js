@@ -1,6 +1,7 @@
 const { gql } = require("apollo-server-express");
 
 const agenda_typeDefs = gql`
+  """Enum que representa los días de la semana"""
   enum DiaSemana {
     DOMINGO  
     LUNES
@@ -9,39 +10,55 @@ const agenda_typeDefs = gql`
     JUEVES
     VIERNES
     SABADO
-
   }
 
+  """Estructura que representa el horario disponible para un día específico"""
   type HorarioDia {
+    """Día de la semana"""
     dia: DiaSemana!
-    horas: [String!]!  # Formato "HH:MM" (ej: ["08:00", "09:00"])
+
+    """Horas disponibles en formato HH:MM (ej: ["08:00", "09:00"])"""
+    horas: [String!]!
   }
 
+  """Agenda médica con especialidades y horarios disponibles"""
   type Agenda {
+    """ID único de la agenda"""
     id: ID!
+
+    """ID del médico propietario de esta agenda"""
     medico_id: Int!
+
+    """Especialidades médicas asociadas a esta agenda"""
     especialidades: [Especialidad!]!  
+
+    """Horarios disponibles agrupados por día"""
     horarios_disponibles: [HorarioDia!]!
+
     createdAt: String
     updatedAt: String
   }
 
   type Query {
-    # Para médicos
+    """Permite a un médico obtener su propia agenda (requiere token y rol 'medico')"""
     getMiAgenda: Agenda
     
-    # Para pacientes
-    getMedicosDisponibles(especialidad: String!, fecha: String!): [Agenda]
+    """Obtiene una lista de médicos disponibles según especialidad y fecha"""
+    getMedicosDisponibles(
+      especialidad: String!, 
+      fecha: String!
+    ): [Agenda]
   }
 
   type Mutation {
-    # Para médicos
+    """Permite a un médico crear su agenda con horarios y especialidades"""
     crearAgenda(
       especialidades: [String!]!
       horarios_disponibles: [HorarioDiaInput!]!
     ): Agenda
   }
 
+  """Input para definir los horarios de un día"""
   input HorarioDiaInput {
     dia: DiaSemana!
     horas: [String!]!
@@ -49,6 +66,7 @@ const agenda_typeDefs = gql`
 `;
 
 module.exports = agenda_typeDefs;
+
 
 /*
 -------------------------------------------------------
