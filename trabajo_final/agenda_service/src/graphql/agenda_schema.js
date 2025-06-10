@@ -28,7 +28,7 @@ const agenda_typeDefs = gql`
 
   type Query {
     # Para médicos
-    getAgenda(medico_id: ID!): Agenda
+    getMiAgenda: Agenda
     
     # Para pacientes
     getMedicosDisponibles(especialidad: String!, fecha: String!): [Agenda]
@@ -37,7 +37,6 @@ const agenda_typeDefs = gql`
   type Mutation {
     # Para médicos
     crearAgenda(
-      medico_id: Int!
       especialidades: [String!]!
       horarios_disponibles: [HorarioDiaInput!]!
     ): Agenda

@@ -43,7 +43,7 @@ function obtenerDiaSemana(fechaValida) {
 
 const agendaResolvers = {
   Query: {
-    getAgenda: async (_, { medico_id }, context) => {
+    getMiAgenda: async (parent, agrs, context) => {
       if (!context.user) {
         throw new AuthenticationError("No autorizado. Token inválido o ausente.");
       }
@@ -51,11 +51,9 @@ const agendaResolvers = {
       if (context.user.role !== "medico") {
         throw new AuthenticationError("Solo los médicos pueden acceder a esta agenda.");
       }
-      // Solo puede acceder a su propia agenda
-      if (parseInt(context.user.id) !== parseInt(medico_id)) {
-        console.log(`Médico ${context.user.id} intentando acceder a agenda de ${medico_id}`);
-        throw new AuthenticationError("No autorizado para ver la agenda de otro médico.");
-      }
+
+      const medico_id = context.user.id;
+
       const agenda = await Agenda.findOne({ medico_id }).populate("especialidades");
       if (!agenda) {
         throw new UserInputError(`No se encontró agenda para el médico con ID ${medico_id}`);
@@ -100,7 +98,7 @@ const agendaResolvers = {
   },
 
   Mutation: {
-    crearAgenda: async (_, { medico_id, especialidades, horarios_disponibles }, context) => {
+    crearAgenda: async (_, {especialidades, horarios_disponibles }, context) => {
 
       if (!context.user) {
         throw new AuthenticationError("No autorizado. Token inválido o ausente.");
@@ -109,16 +107,7 @@ const agendaResolvers = {
       if (context.user.role !== "medico") {
         throw new AuthenticationError("Solo los médicos pueden acceder.");
       }
-      // Validar que el médico exista en el microservicio de usuarios
-      const existe = await validarMedico(context.user.id);
-      if (!existe) {
-        throw new AuthenticationError("El médico autenticado no existe en el sistema.");
-      }
-      // Solo puede acceder a su propia agenda
-      if (parseInt(context.user.id) !== parseInt(medico_id)) {
-        throw new AuthenticationError("No autorizado para hacer cambios en la agenda de otro médico.");
-      }
-
+      const medico_id = context.user.id;
       const horariosValidados = validarHorarios(horarios_disponibles);
 
       const nuevaAgenda = new Agenda({

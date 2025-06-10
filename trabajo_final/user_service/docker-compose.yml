@@ -12,8 +12,7 @@ services:
       - NODE_ENV=development
       - SWAGGER_HOST_PORT=3001
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
@@ -29,7 +28,7 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
       start_period: 30s
     volumes:
       - mysql_data:/var/lib/mysql
