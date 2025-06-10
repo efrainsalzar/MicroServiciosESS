@@ -29,7 +29,9 @@ query {
 }
 -------------------------------------------------------
 mutation {
-    crearEspecialidad(nombre: null, descripcion: null) {
+    crearEspecialidad(
+      nombre: "odontologia",     
+      descripcion: "cosas de odontologia interna") {
         id
         nombre
         descripcion

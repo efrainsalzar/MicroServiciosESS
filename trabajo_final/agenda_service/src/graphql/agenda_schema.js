@@ -53,17 +53,17 @@ module.exports = agenda_typeDefs;
 /*
 -------------------------------------------------------
 query {
-  getAgenda(medico_id: 3) {
-    id
-    medico_id
-    especialidades {
-      nombre
+    getMiAgenda {
+        id
+        medico_id
+        especialidades {
+            nombre
+        }
+        horarios_disponibles {
+            dia
+            horas
+        }
     }
-    horarios_disponibles {
-      dia
-      horas
-    }
-  }
 }
 -------------------------------------------------------
 query {
@@ -84,8 +84,10 @@ query {
 -------------------------------------------------------
 mutation {
   crearAgenda(
-    medico_id: 3
-    especialidades: ["6845fa92dec0f4c0a5be8dc9", "6845fa97dec0f4c0a5be8dcb"]
+    especialidades: [
+      "6848ba84550f75d57e9c0828",
+      "6848ba84550f75d57e9c0829"
+      ]
     horarios_disponibles: [
       { dia: MARTES, horas: ["14:00", "15:00", "16:00"] }
       { dia: JUEVES, horas: ["14:00", "15:00"] }
@@ -94,13 +96,15 @@ mutation {
   ) {
     id
     medico_id
+      especialidades {
+          nombre
+      }
     horarios_disponibles {
       dia
       horas
     }
   }
 }
-
 -------------------------------------------------------
 -------------------------------------------------------
  */

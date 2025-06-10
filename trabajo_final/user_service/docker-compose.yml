@@ -1,5 +1,5 @@
 services:
-  app:
+  usuarios_app:
     build: .
     ports:
       - "3001:3000"
