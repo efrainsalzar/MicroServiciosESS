@@ -1,4 +1,17 @@
 services:
+
+  # ------------------------ NGINX SERVICE ------------------------
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user_service
+      - agenda_service
+      - reservation_service
+
   # ------------------------ USER SERVICE ------------------------
   user_service:
     build: ./user_service
@@ -55,8 +68,34 @@ services:
       - mongo_data:/data/db
 
   # ------------------------ RESERVATION SERVICE ------------------------
+  reservation_service:
+    build: ./reservation_service
+    ports:
+      - "5001:5000"
+    environment:
+      - DATABASE_URL=postgresql://usuario:contraseña@reservation_db:5432/reserva_f
+      - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    depends_on:
+      - reservation_db
+    volumes:
+      - ./reservation_service:/usr/src/app
+    command: sh -c "flask db upgrade && python app.py"
+
+  reservation_db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: reserva_f
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: contraseña
+    ports:
+      - "5433:5432"
+    volumes:
+      - flask_postgress_data:/var/lib/postgresql/data
 
 
 volumes:
   mongo_data:
   mysql_data:
+  flask_postgress_data:

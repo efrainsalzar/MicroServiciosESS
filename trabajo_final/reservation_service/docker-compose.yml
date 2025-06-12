@@ -6,6 +6,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://usuario:contraseña@db:5432/reserva_f
       - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
     depends_on:
       - db
     volumes:
@@ -20,12 +22,6 @@ services:
       POSTGRES_PASSWORD: contraseña
     ports:
       - "5433:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "usuario"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
     volumes:
       - flask_postgress_data:/var/lib/postgresql/data
 

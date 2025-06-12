@@ -5,8 +5,10 @@ from app.models import Reserva
 from app import db
 from datetime import datetime
 
-USER_SERVICE_URL = "http://localhost:3001/api"
-AGENDA_SERVICE_URL = "http://localhost:4001/graphql"
+#USER_SERVICE_URL = "http://localhost:3001/api"
+#AGENDA_SERVICE_URL = "http://localhost:4001/graphql"
+USER_SERVICE_URL = "http://user_service:3000/api"
+AGENDA_SERVICE_URL = "http://agenda_service:4000/graphql"
 
 
 # ======================= UTILS =======================
