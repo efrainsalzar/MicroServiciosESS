@@ -1,4 +1,5 @@
 const { AuthenticationError, UserInputError } = require("apollo-server-express");
+const Especialidad = require('../models/especialidad');
 const Agenda = require("../models/agenda");
 
 function validarFecha(fecha) {
@@ -98,7 +99,7 @@ const agendaResolvers = {
   },
 
   Mutation: {
-    crearAgenda: async (_, {especialidades, horarios_disponibles }, context) => {
+    crearAgenda: async (_, { especialidades, horarios_disponibles }, context) => {
 
       if (!context.user) {
         throw new AuthenticationError("No autorizado. Token inválido o ausente.");
@@ -109,6 +110,15 @@ const agendaResolvers = {
       }
       const medico_id = context.user.id;
       const horariosValidados = validarHorarios(horarios_disponibles);
+
+      // Validar que todas las especialidades existen
+      const especialidadesEncontradas = await Especialidad.find({
+        _id: { $in: especialidades }
+      });
+
+      if (especialidadesEncontradas.length !== especialidades.length) {
+        throw new Error("Una o más especialidades no existen.");
+      }
 
       const nuevaAgenda = new Agenda({
         medico_id,

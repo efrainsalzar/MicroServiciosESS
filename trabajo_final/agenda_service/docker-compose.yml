@@ -5,6 +5,7 @@ services:
       - "4001:4000"
     environment:
       - PORT=4000
+      - HOST_PORT=4001
       - MONGO_URI=mongodb://db:27017/agenda_f
       - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
     depends_on:
