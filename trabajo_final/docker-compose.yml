@@ -1,0 +1,62 @@
+services:
+  # ------------------------ USER SERVICE ------------------------
+  user_service:
+    build: ./user_service
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=user_db
+      - DB_USER=root
+      - DB_NAME=usuarios_f
+      - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
+      - NODE_ENV=development
+      - SWAGGER_HOST_PORT=3001
+    depends_on:
+      - user_db
+    volumes:
+      - ./user_service:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npx knex migrate:latest --knexfile knexfile.js --env development && node app.js"
+
+  user_db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: usuarios_f
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # ------------------------ AGENDA SERVICE ------------------------
+  agenda_service:
+    build: ./agenda_service
+    ports:
+      - "4001:4000"
+    environment:
+      - PORT=4000
+      - HOST_PORT=4001
+      - MONGO_URI=mongodb://agenda_db:27017/agenda_f
+      - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
+    depends_on:
+      - agenda_db
+    volumes:
+      - ./agenda_service:/usr/src/app
+      - /usr/src/app/node_modules
+
+  agenda_db:
+    image: mongo:6.0
+    environment:
+      MONGO_INITDB_DATABASE: agenda_f
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # ------------------------ RESERVATION SERVICE ------------------------
+
+
+volumes:
+  mongo_data:
+  mysql_data:

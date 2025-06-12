@@ -51,7 +51,7 @@ def get_reservas():
     return jsonify(reservas_list)
 
 
-def post_reserva():
+def create_reserva():
     """
     Crear una nueva reserva a partir de JSON recibido.
     """

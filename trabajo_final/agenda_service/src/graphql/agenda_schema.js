@@ -28,6 +28,7 @@ const agenda_typeDefs = gql`
 
     """ID del médico propietario de esta agenda"""
     medico_id: Int!
+    nombre: String
 
     """Especialidades médicas asociadas a esta agenda"""
     especialidades: [Especialidad!]!  

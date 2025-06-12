@@ -1,5 +1,6 @@
 const { AuthenticationError, UserInputError } = require("apollo-server-express");
 const Especialidad = require('../models/especialidad');
+const axios = require("axios");
 const Agenda = require("../models/agenda");
 
 function validarFecha(fecha) {
@@ -42,6 +43,8 @@ function obtenerDiaSemana(fechaValida) {
   return diasSemana[date.getDay()];
 }
 
+const url_service_user = "http://user_service:3000/api/get_id";
+
 const agendaResolvers = {
   Query: {
     getMiAgenda: async (parent, agrs, context) => {
@@ -63,10 +66,7 @@ const agendaResolvers = {
     },
 
     getMedicosDisponibles: async (_, { especialidad, fecha }, context) => {
-      if (!context.user) {
-        throw new AuthenticationError("No autorizado. Token inválido o ausente.");
-      }
-      // Solo médicos pueden consultar su propia agenda
+      if (!context.user) throw new AuthenticationError("No autorizado. Token inválido o ausente.");
       if (context.user.role !== "paciente") {
         throw new AuthenticationError("Solo los pacientes pueden acceder a esta agenda.");
       }
@@ -74,28 +74,61 @@ const agendaResolvers = {
       const fechaValida = validarFecha(fecha);
       const diaSemana = obtenerDiaSemana(fechaValida);
 
-      // Buscar todas las agendas con las especialidades pobladas
       const agendas = await Agenda.find().populate("especialidades");
 
-      // Filtrar agendas que tengan la especialidad solicitada
       const agendasFiltradas = agendas.filter(agenda =>
         agenda.especialidades.some(e => e.nombre.toLowerCase() === especialidad.toLowerCase())
       );
+
       if (agendasFiltradas.length === 0) {
         throw new UserInputError(`No hay médicos de ${especialidad} registrados.`);
       }
-      if (agendasFiltradas.length === 0) {
+
+      const datosConHorario = agendasFiltradas
+        .map(agenda => {
+          const horarios = agenda.horarios_disponibles.filter(hd => hd.dia === diaSemana);
+          return horarios.length > 0 ? {
+            medico_id: agenda.medico_id,
+            especialidades: agenda.especialidades,
+            horarios_disponibles: horarios
+          } : null;
+        })
+        .filter(Boolean);
+
+      if (datosConHorario.length === 0) {
         throw new UserInputError(
           `No hay médicos de ${especialidad} disponibles el ${diaSemana} (${fechaValida})`
         );
       }
 
-      return agendasFiltradas.map(agenda => ({
-        medico_id: agenda.medico_id,
-        especialidades: agenda.especialidades,
-        horarios_disponibles: agenda.horarios_disponibles.filter(hd => hd.dia === diaSemana)
-      }));
-    },
+      // Si tu microservicio solo acepta GET con ID, hacer múltiples llamadas
+      const resultados = await Promise.all(
+        datosConHorario.map(async d => {
+          try {
+            const response = await axios.get(`${url_service_user}/${d.medico_id}`);
+            //console.log("Nombre del médico obtenido:", response.data.name)
+            return {
+              medico_id: d.medico_id,
+              nombre: response.data.name,
+              especialidades: d.especialidades,
+              horarios_disponibles: d.horarios_disponibles
+
+            };
+            
+          } catch (err) {
+            console.error("Error al obtener nombre del médico:", err.message);
+            return {
+              medico_id: d.medico_id,
+              nombre: "Nombre no disponible",
+              especialidades: d.especialidades,
+              horarios_disponibles: d.horarios_disponibles
+            };
+          }
+        })
+      );
+
+      return resultados;
+    }
   },
 
   Mutation: {
