@@ -1,8 +1,8 @@
-"""Crear tabla reservas
+"""Agrega campo especialidad_id a reservas
 
-Revision ID: 6f48d1fbb8e2
-Revises: 6d965ebafe40
-Create Date: 2025-06-07 20:45:17.806047
+Revision ID: 4567e9c618ab
+Revises: 
+Create Date: 2025-06-12 08:29:05.513384
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6f48d1fbb8e2'
-down_revision = '6d965ebafe40'
+revision = '4567e9c618ab'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('paciente_id', sa.Integer(), nullable=False),
     sa.Column('medico_id', sa.Integer(), nullable=False),
+    sa.Column('especialidad_id', sa.String(length=50), nullable=False),
     sa.Column('fecha_hora', sa.DateTime(), nullable=False),
     sa.Column('duracion', sa.Integer(), nullable=False),
     sa.Column('estado', sa.String(length=20), nullable=False),
