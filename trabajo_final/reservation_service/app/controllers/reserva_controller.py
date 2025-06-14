@@ -4,7 +4,11 @@ from app.middlewares.auth import token_required
 from app.models import Reserva
 from app import db
 from datetime import datetime
+from app.logger import log_event
 
+
+#USER_SERVICE_URL = "http://localhost:3000/api"
+#AGENDA_SERVICE_URL = "http://localhost:4000/graphql"
 #USER_SERVICE_URL = "http://localhost:3001/api"
 #AGENDA_SERVICE_URL = "http://localhost:4001/graphql"
 USER_SERVICE_URL = "http://user_service:3000/api"
@@ -91,6 +95,8 @@ def get_reservas():
     paciente = get_user_by_id(user_id)
     paciente_nombre = paciente.get("name", "Desconocido") if paciente else "Desconocido"
 
+    log_event(f"Paciente '{paciente_nombre}' (ID: {user_id}) solicitó sus reservas.")
+
     reservas = Reserva.query.filter_by(paciente_id=user_id).all()
 
     reservas_list = []
@@ -130,7 +136,10 @@ def create_reserva():
     fecha_hora_str = data.get("fecha_hora")
     especialidad_nombre = data.get("especialidad_nombre")
 
+    log_event(f"Paciente '{paciente_nombre}' (ID: {user_id}) intenta crear reserva para médico {medico_id}, especialidad '{especialidad_nombre}' en fecha {fecha_hora_str}.")
+
     if not medico_id or not fecha_hora_str or not especialidad_nombre:
+        log_event(f"Paciente '{paciente_nombre}' (ID: {user_id}) faltan campos obligatorios en la solicitud de reserva.")
         return jsonify({"error": "Faltan campos obligatorios: medico_id, fecha_hora o especialidad_nombre"}), 400
 
     try:
@@ -139,11 +148,13 @@ def create_reserva():
 
         medicos_disponibles, error = get_medicos_disponibles(especialidad_nombre, fecha_iso, jwt_token)
         if error:
+            log_event(f"Error al obtener médicos disponibles: {error}")
             return jsonify({"error": error}), 400
 
         # Buscar el médico solicitado dentro de los disponibles
         medico_encontrado = next((m for m in medicos_disponibles if m["medico_id"] == medico_id), None)
         if not medico_encontrado:
+            log_event(f"Médico {medico_id} no disponible para especialidad '{especialidad_nombre}' y fecha {fecha_iso}.")
             return jsonify({"error": "Médico no disponible para esa especialidad en la fecha"}), 400
 
         # Buscar la especialidad en el médico
@@ -152,6 +163,7 @@ def create_reserva():
             None
         )
         if not especialidad:
+            log_event(f"Especialidad '{especialidad_nombre}' no encontrada en médico {medico_id}.")
             return jsonify({"error": "Especialidad no encontrada en el médico"}), 400
 
         especialidad_id = especialidad["nombre"]
@@ -167,6 +179,9 @@ def create_reserva():
         db.session.add(nueva_reserva)
         db.session.commit()
 
+        log_event(f"Reserva creada exitosamente: ID {nueva_reserva.id} para paciente '{paciente_nombre}' (ID: {user_id}).")
+
+
         return jsonify({
             "id": nueva_reserva.id,
             "paciente_id": nueva_reserva.paciente_id,
@@ -179,6 +194,7 @@ def create_reserva():
 
     except Exception as e:
         db.session.rollback()
+        log_event(f"Error al crear reserva para paciente '{paciente_nombre}' (ID: {user_id}): {str(e)}")
         return jsonify({"error": f"Error al crear reserva: {str(e)}"}), 400
     
 
@@ -190,17 +206,28 @@ def cancelar_reserva(reserva_id):
     if error_response:
         return error_response, status
 
+    paciente = get_user_by_id(user_id)
+    paciente_nombre = paciente.get("name", "Desconocido") if paciente else "Desconocido"
+
+    log_event(f"Paciente '{paciente_nombre}' (ID: {user_id}) intenta cancelar reserva ID {reserva_id}.")
+
     reserva = Reserva.query.get(reserva_id)
     if not reserva:
+        log_event(f"Reserva ID {reserva_id} no encontrada para cancelar.")
         return jsonify({"error": "Reserva no encontrada"}), 404
 
     if reserva.paciente_id != user_id:
+        log_event(f"Paciente '{paciente_nombre}' (ID: {user_id}) no tiene permiso para cancelar reserva ID {reserva_id}.")
         return jsonify({"error": "No tienes permiso para cancelar esta reserva"}), 403
 
     if reserva.estado == "cancelada":
+        log_event(f"Reserva ID {reserva_id} ya estaba cancelada.")
         return jsonify({"mensaje": "La reserva ya está cancelada"}), 200
 
     reserva.estado = "cancelada"
     db.session.commit()
 
+    log_event(f"Reserva ID {reserva_id} cancelada exitosamente por paciente '{paciente_nombre}' (ID: {user_id}).")
+
     return jsonify({"mensaje": f"Reserva {reserva.id} cancelada con éxito"}), 200
+

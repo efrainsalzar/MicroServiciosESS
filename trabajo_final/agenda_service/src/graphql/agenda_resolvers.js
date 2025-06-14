@@ -1,5 +1,6 @@
 const { AuthenticationError, UserInputError } = require("apollo-server-express");
 const Especialidad = require('../models/especialidad');
+const { logEvent } = require("../logs/logger");
 const axios = require("axios");
 const Agenda = require("../models/agenda");
 
@@ -135,10 +136,12 @@ const agendaResolvers = {
     crearAgenda: async (_, { especialidades, horarios_disponibles }, context) => {
 
       if (!context.user) {
+        logEvent("Intento de acceso sin token en crearAgenda", "Anónimo");
         throw new AuthenticationError("No autorizado. Token inválido o ausente.");
       }
       // Solo médicos pueden consultar su propia agenda
       if (context.user.role !== "medico") {
+        logEvent(`Acceso denegado a crearAgenda por rol inválido: ${context.user.role}`, context.user.name);
         throw new AuthenticationError("Solo los médicos pueden acceder.");
       }
       const medico_id = context.user.id;
@@ -150,6 +153,7 @@ const agendaResolvers = {
       });
 
       if (especialidadesEncontradas.length !== especialidades.length) {
+        logEvent("Error al validar especialidades: no todas existen", context.user.name);
         throw new Error("Una o más especialidades no existen.");
       }
 
@@ -159,6 +163,7 @@ const agendaResolvers = {
         horarios_disponibles: horariosValidados,
       });
       await nuevaAgenda.save();
+      logEvent(`Agenda creada con éxito para médico ID ${medico_id}`, context.user.name);
       return await Agenda.findById(nuevaAgenda._id).populate("especialidades");
     },
   },

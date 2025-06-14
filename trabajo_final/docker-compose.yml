@@ -94,8 +94,42 @@ services:
     volumes:
       - flask_postgress_data:/var/lib/postgresql/data
 
+  # ------------------------ LOGS SERVICE ------------------------
+  loki:
+    image: grafana/loki:2.9.2
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./logs:/logs
+
+  promtail:
+    image: grafana/promtail:2.9.2
+    volumes:
+      - ./user_service/logs:/logs/user_service_logs
+      - ./agenda_service/src/logs:/logs/agenda_service_logs
+      - ./reservation_service/logs:/logs/reservation_service_logs
+      - ./logs/promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
+
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+
 
 volumes:
   mongo_data:
   mysql_data:
   flask_postgress_data:
+  grafana_data:       

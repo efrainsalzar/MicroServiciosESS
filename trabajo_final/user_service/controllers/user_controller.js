@@ -1,5 +1,7 @@
 const User = require("../models/user_model"); // Your promise-based model
 const generateToken = require("../middleware/generate_token");
+const { logEvent } = require("../logs/logger");
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
@@ -66,6 +68,8 @@ const registerUser = async (req, res) => {
       password_hash: hash,
       role,
     });
+    // logs
+    logEvent("Registro exitoso", email, req.ip);
 
     res.status(201).json({
       message: "Usuario creado correctamente",
@@ -123,6 +127,8 @@ const loginUser = async (req, res) => {
       email: user.email,
       role: user.role,
     });
+
+    logEvent("Inicio de sesión exitoso", email, req.ip);
 
     res.json({
       message: "Login exitoso",
