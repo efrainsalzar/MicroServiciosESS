@@ -6,6 +6,51 @@ from app import db
 from datetime import datetime
 from app.logger import log_event
 
+import pika
+import json
+
+def enviar_notificacion(tipo, datos):
+    try:
+        # Configurar credenciales de RabbitMQ
+        credentials = pika.PlainCredentials(
+            username=os.getenv('RABBITMQ_USER', 'admin'),
+            password=os.getenv('RABBITMQ_PASS', 'admin')
+        )
+        
+        # Configurar parámetros de conexión
+        parameters = pika.ConnectionParameters(
+            host=os.getenv('RABBITMQ_HOST', 'rabbitmq'),
+            port=5672,
+            virtual_host='/',
+            credentials=credentials
+        )
+        
+        connection = pika.BlockingConnection(parameters)
+        channel = connection.channel()
+        
+        # Declarar la cola (asegurar que existe)
+        channel.queue_declare(queue='notificaciones', durable=True)
+
+        mensaje = {
+            'tipo': tipo,
+            'datos': datos
+        }
+
+        channel.basic_publish(
+            exchange='',
+            routing_key='notificaciones',
+            body=json.dumps(mensaje),
+            properties=pika.BasicProperties(delivery_mode=2)
+        )
+
+        print(f"[NOTIFICACIÓN] Enviada: {mensaje}")
+        connection.close()
+        
+    except Exception as e:
+        print(f"[NOTIFICACIÓN] Error al enviar notificación: {e}")
+        # Opcional: registrar en logs más detallados
+        import traceback
+        print(f"[NOTIFICACIÓN] Traceback: {traceback.format_exc()}")
 
 #USER_SERVICE_URL = "http://localhost:3000/api"
 #AGENDA_SERVICE_URL = "http://localhost:4000/graphql"
@@ -131,6 +176,9 @@ def create_reserva():
     auth_header = request.headers.get("Authorization", "")
     jwt_token = auth_header.split(" ")[1] if " " in auth_header else auth_header
 
+    paciente = get_user_by_id(user_id)
+    paciente_nombre = paciente.get("name", "Desconocido") if paciente else "Desconocido"
+
     data = request.get_json()
     medico_id = data.get("medico_id")
     fecha_hora_str = data.get("fecha_hora")
@@ -179,6 +227,15 @@ def create_reserva():
         db.session.add(nueva_reserva)
         db.session.commit()
 
+        enviar_notificacion("reserva_creada", {
+            "reserva_id": nueva_reserva.id,
+            "paciente_id": nueva_reserva.paciente_id,
+            "medico_id": nueva_reserva.medico_id,
+            "especialidad_id": nueva_reserva.especialidad_id,
+            "fecha_hora": nueva_reserva.fecha_hora.isoformat(),
+            "estado": nueva_reserva.estado
+        })
+
         log_event(f"Reserva creada exitosamente: ID {nueva_reserva.id} para paciente '{paciente_nombre}' (ID: {user_id}).")
 
 
@@ -226,6 +283,13 @@ def cancelar_reserva(reserva_id):
 
     reserva.estado = "cancelada"
     db.session.commit()
+
+    enviar_notificacion("reserva_cancelada", {
+        "reserva_id": reserva.id,
+        "paciente_id": reserva.paciente_id,
+        "fecha_hora": reserva.fecha_hora.isoformat(),
+        "motivo": "Cancelación solicitada por el paciente"
+    })    
 
     log_event(f"Reserva ID {reserva_id} cancelada exitosamente por paciente '{paciente_nombre}' (ID: {user_id}).")
 

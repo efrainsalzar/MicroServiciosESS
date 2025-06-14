@@ -77,8 +77,12 @@ services:
       - JWT_SECRET=no_es_una_contraseña_pero_suena_segura_y_si_la_ves_no_la_uses_ni_la_copies_porfa_gracias
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=admin
     depends_on:
       - reservation_db
+      - rabbitmq
     volumes:
       - ./reservation_service:/usr/src/app
     command: sh -c "flask db upgrade && python app.py"
@@ -127,9 +131,41 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
 
+# ------------------------ NOTIFICATION SERVICE ------------------------
+  notification_service:
+    build: ./notification_service
+    ports:
+      - "6001:6000"
+    environment:
+      - PORT=6000
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=admin
+      - RABBITMQ_PASS=admin
+      - USER_SERVICE_URL=http://user_service:3000/api
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./notification_service:/usr/src/app
+      - /usr/src/app/node_modules
+      - ./notification_service/logs:/usr/src/app/logs
 
+# ------------------------ MESAGE  ------------------------
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"     # para la conexión con el backend
+      - "15672:15672"   # para la UI de administración
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+# ------------------------ VOLUMES ----------------------------
 volumes:
   mongo_data:
   mysql_data:
   flask_postgress_data:
   grafana_data:       
+  rabbitmq_data:
+
